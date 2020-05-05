@@ -111,7 +111,7 @@
                 var longitude = response.coord.lon;
                 // console.log(latitude, longitude);
 
-                var UVURL = "http://api.openweathermap.org/data/2.5/uvi/forecast?appid=" + APIKey + "&lat=" + latitude + "&lon=" + longitude;
+                var UVURL = "https://api.openweathermap.org/data/2.5/uvi/forecast?appid=" + APIKey + "&lat=" + latitude + "&lon=" + longitude;
                 $.ajax({
                     url: UVURL,
                     method: "GET"
