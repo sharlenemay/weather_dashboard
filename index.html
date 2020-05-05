@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+<!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+
+    <!-- Heading -->
+    <h2 class = "text-center">Weather Dashboard</h2></span>
+
+
+    <div class="container-fluid">
+        
+        <!-- City Search -->
+        <div class="row">
+            <div class="col-4">
+                <form id="place-form">
+                    <label for="place-input">Search for City:</label>
+                    <input type="text" id="place-input">
+                    <button type="submit" id="add-place"><i class="fa fa-search">Search</i></button>
+                </form>
+                <div class="previous-cities"></div>
+            </div>
+            <!-- Chosen Weather -->
+            <div class="col-8">
+                <div class="container">
+                    <h1 class="city"></h1>
+                    <div class="temperature"></div>
+                    <div class="humidity"></div>
+                    <div class="wind"></div>
+                    <div class="UV-index"></div>
+                </div>
+                
+                <!-- 5 Day Forecast -->
+                <div class="container">
+                    <h2 class="forecast">5-Day Forecast:</h2>
+                    <div class="card">
+                        <div class="first-day"></div>
+                    </div>
+                    <div class="card">
+                        <div class="second-day"></div>
+                    </div>
+                    <div class="card">
+                        <div class="third-day"></div>
+                    </div>
+                    <div class="card">
+                        <div class="fourth-day"></div>
+                    </div>
+                    <div class="card">
+                        <div class="fifth-day"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        var cities =[];
+        displayStoredCities();
+
+        function displayWeatherInfo(){
+
+            var APIKey = "c36869fbb722f6deaf474e51d75975b3";
+            var place = $(this).attr("data-name");
+            var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + place + "&appid=" + APIKey + "&units=imperial";
+
+            $.ajax({
+                url:queryURL,
+                method: "GET"
+            }).then (function(response) {
+                console.log(response);
+
+                // variables for weather information
+
+                var location = response.name;
+                var country = response.sys.country;
+                var temperature = response.main.temp;
+                var humidity = response.main.humidity;
+                var wind = response.wind.speed;
+                var unixTime = response.dt
+                var time = new Date(unixTime*1000);
+                var today = time.toDateString();
+
+                // Retrieve city name
+                    // console.log(location);
+                    // console.log(country);
+                // Retrieve temp
+                    // console.log(temperature);
+                // Retrieve humidity
+                    // console.log(humidity);
+                // Retrieve date
+                    // console.log(today);
+
+                // Retrieve wind speed
+                    // console.log(wind + " MPH");
+                
+                // GET UV Index
+                var latitude = response.coord.lat;
+                var longitude = response.coord.lon;
+                // console.log(latitude, longitude);
+
+                var UVURL = "http://api.openweathermap.org/data/2.5/uvi/forecast?appid=" + APIKey + "&lat=" + latitude + "&lon=" + longitude;
+                $.ajax({
+                    url: UVURL,
+                    method: "GET"
+                    }).then (function(UV) {
+                        // console.log(UV);
+
+                        var UVindex = UV[0].value;
+                        // console.log(UVindex);
+
+                        $(".UV-index").text("UV Index: " + UVindex);
+                    });
+                
+                // Create divs to hold weather info
+                $(".city").text(location + ", " + country + " (" + today +")");
+                $(".temperature").text("Temperature: " + temperature + " °F");
+                $(".humidity").text("Humidity: " + humidity);
+                $(".wind").text(wind + " MPH");
+                
+                // 5 Day Forecast
+    
+                var forecastURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + place + "&appid=" + APIKey + "&units=imperial";
+    
+                $.ajax({
+                    url: forecastURL,
+                    method: "GET"
+                }).then (function (forecast){
+                    console.log(forecast);
+                    console.log(forecast.list[1].main.temp);
+                    console.log(forecast.list[9].main.temp);
+                    console.log(forecast.list[17].main.temp);
+                    console.log(forecast.list[25].main.temp);
+                    console.log(forecast.list[33].main.temp);
+
+                    // Retrieve date for next 5 days
+                    var firstDayDT = forecast.list[1].dt
+                    var firstDayTime = new Date(firstDayDT*1000);
+                    var firstDay = firstDayTime.toDateString();
+                    // console.log(firstDay);
+
+                    var secondDayDT = forecast.list[9].dt
+                    var secondDayTime = new Date(secondDayDT*1000);
+                    var secondDay = secondDayTime.toDateString();
+                    // console.log(secondDay);
+
+                    var thirdDayDT = forecast.list[17].dt
+                    var thirdDayTime = new Date(thirdDayDT*1000);
+                    var thirdDay = thirdDayTime.toDateString();
+                    // console.log(thirdDay);
+
+                    var fourthDayDT = forecast.list[25].dt
+                    var fourthDayTime = new Date(fourthDayDT*1000);
+                    var fourthDay = fourthDayTime.toDateString();
+                    // console.log(fourthDay);
+
+                    var fifthDayDT = forecast.list[33].dt
+                    var fifthDayTime = new Date(fifthDayDT*1000);
+                    var fifthDay = fifthDayTime.toDateString();
+                    // console.log(fifthDay);
+
+                    // Retrieve temp for next 5 days
+                    var firstDayTemp = forecast.list[1].main.temp;
+                    var secondDayTemp = forecast.list[9].main.temp;
+                    var thirdDayTemp = forecast.list[17].main.temp;
+                    var fourthDayTemp = forecast.list[25].main.temp;
+                    var fifthDayTemp = forecast.list[33].main.temp;
+
+                    // Retrieve humidity for next 5 days
+                    var firstDayHumidity = forecast.list[1].main.humidity;
+                    var secondDayHumidity = forecast.list[9].main.humidity;
+                    var thirdDayHumidity = forecast.list[17].main.humidity;
+                    var fourthDayHumidity = forecast.list[25].main.humidity;
+                    var fifthDayHumidity = forecast.list[33].main.humidity;
+
+                    // Append weather variables to forecast divs
+                    var firstDate = $("<h4>");
+                    $(".first-day").append(firstDate);
+                    firstDate.text(firstDay);
+                    $(".first-day").append("Temperature: " + firstDayTemp + " °F");
+                    $(".first-day").append("<br>");
+                    $(".first-day").append("Humidity: " + firstDayHumidity);
+
+                    var secondDate = $("<h4>");
+                    $(".second-day").append(secondDate);
+                    secondDate.text(secondDay);
+                    $(".second-day").append("Temperature: " + secondDayTemp + " °F");
+                    $(".second-day").append("<br>");
+                    $(".second-day").append("Humidity: " + secondDayHumidity);
+
+                    var thirdDate = $("<h4>");
+                    $(".third-day").append(thirdDate);
+                    thirdDate.text(thirdDay);
+                    $(".third-day").append("Temperature: " + thirdDayTemp + " °F");
+                    $(".third-day").append("<br>");
+                    $(".third-day").append("Humidity: " + thirdDayHumidity);
+
+                    var fourthDate = $("<h4>");
+                    $(".fourth-day").append(fourthDate);
+                    fourthDate.text(fourthDay);
+                    $(".fourth-day").append("Temperature: " + fourthDayTemp + " °F");
+                    $(".fourth-day").append("<br>");
+                    $(".fourth-day").append("Humidity: " + fourthDayHumidity);
+
+                    var fifthDate = $("<h4>");
+                    $(".fifth-day").append(fifthDate);
+                    fifthDate.text(fifthDay);
+                    $(".fifth-day").append("Temperature: " + fifthDayTemp + " °F");
+                    $(".fifth-day").append("<br>");
+                    $(".fifth-day").append("Humidity: " + fifthDayHumidity);
+
+                })
+
+            })
+
+
+
+        }
+
+        // add city to array
+        function renderCityButtons(){
+
+            $(".previous-cities").empty();
+
+            for (var i =0; i<cities.length; i++){
+
+                // create button div for each city added
+                var cityButton = $("<button>");
+                cityButton.addClass("city-name");
+                cityButton.attr("data-name",cities[i]);
+                cityButton.text(cities[i]);
+
+                // append city buttons to "previous-cities" div class
+                $(".previous-cities").append(cityButton);
+                $(".previous-cities").append("<br>");
+
+                storeCities();
+
+            }
+        }
+
+        // Get from local storage previously searched cities
+        function displayStoredCities(){
+            var storedCities = JSON.parse(localStorage.getItem("city"))
+
+            if (storedCities !== null){
+                cities = storedCities;
+            }
+        }
+
+        function storeCities(){
+            // save to local storage
+            localStorage.setItem("city", JSON.stringify(cities));
+        }
+
+        $("#add-place").on("click",function(event){
+            event.preventDefault();
+            // grab city name from input
+            var city = $("#place-input").val().trim();
+
+            // add city to array
+            cities.push(city);
+
+            displayWeatherInfo();
+
+            renderCityButtons();
+        });
+
+        $(document).on("click",".city-name",displayWeatherInfo);
+
+        renderCityButtons();
+        
+    </script>
+        
+    </body>
+    </html>
