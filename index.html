@@ -30,7 +30,7 @@
             </div>
             <!-- Chosen Weather -->
             <div class="col-8">
-                <div class="container">
+                <div class="container main">
                     <h1 class="city"></h1>
                     <div class="temperature"></div>
                     <div class="humidity"></div>
@@ -125,7 +125,9 @@
                     });
                 
                 // Create divs to hold weather info
-                $(".city").text(location + ", " + country + " (" + today +")");
+                var cityTitle = `<h1> ${location}, ${country} (${today}) <img src="http://openweathermap.org/img/wn/${response.weather[0].icon}@2x.png"></img></h1>`
+                $(".city").html(cityTitle);
+                // $(".city").text(location + ", " + country + " (" + today +")");
                 $(".temperature").text("Temperature: " + temperature + " °F");
                 $(".humidity").text("Humidity: " + humidity);
                 $(".wind").text(wind + " MPH");
@@ -139,11 +141,11 @@
                     method: "GET"
                 }).then (function (forecast){
                     console.log(forecast);
-                    console.log(forecast.list[1].main.temp);
-                    console.log(forecast.list[9].main.temp);
-                    console.log(forecast.list[17].main.temp);
-                    console.log(forecast.list[25].main.temp);
-                    console.log(forecast.list[33].main.temp);
+                    // console.log(forecast.list[1].main.temp);
+                    // console.log(forecast.list[9].main.temp);
+                    // console.log(forecast.list[17].main.temp);
+                    // console.log(forecast.list[25].main.temp);
+                    // console.log(forecast.list[33].main.temp);
 
                     // Retrieve date for next 5 days
                     var firstDayDT = forecast.list[1].dt
@@ -171,6 +173,13 @@
                     var fifthDay = fifthDayTime.toDateString();
                     // console.log(fifthDay);
 
+                    // Retrieve icon for next 5 days
+                    var day1icon = forecast.list[1].weather[0].icon;
+                    var day2icon = forecast.list[9].weather[0].icon;
+                    var day3icon = forecast.list[17].weather[0].icon;
+                    var day4icon = forecast.list[25].weather[0].icon;
+                    var day5icon = forecast.list[33].weather[0].icon;
+
                     // Retrieve temp for next 5 days
                     var firstDayTemp = forecast.list[1].main.temp;
                     var secondDayTemp = forecast.list[9].main.temp;
@@ -186,40 +195,36 @@
                     var fifthDayHumidity = forecast.list[33].main.humidity;
 
                     // Append weather variables to forecast divs
-                    var firstDate = $("<h4>");
-                    $(".first-day").append(firstDate);
-                    firstDate.text(firstDay);
-                    $(".first-day").append("Temperature: " + firstDayTemp + " °F");
-                    $(".first-day").append("<br>");
-                    $(".first-day").append("Humidity: " + firstDayHumidity);
+                    var firstDateIcon = `<center><img src="http://openweathermap.org/img/wn/${day1icon}@2x.png" width="50"></img>`
+                    var dayOne = `<h4>${firstDay}</h4> ${firstDateIcon} <br> 
+                    Temperature: ${firstDayTemp} °F <br> 
+                    Humidity: ${firstDayHumidity}`;
+                    $(".first-day").html(dayOne);
 
-                    var secondDate = $("<h4>");
-                    $(".second-day").append(secondDate);
-                    secondDate.text(secondDay);
-                    $(".second-day").append("Temperature: " + secondDayTemp + " °F");
-                    $(".second-day").append("<br>");
-                    $(".second-day").append("Humidity: " + secondDayHumidity);
 
-                    var thirdDate = $("<h4>");
-                    $(".third-day").append(thirdDate);
-                    thirdDate.text(thirdDay);
-                    $(".third-day").append("Temperature: " + thirdDayTemp + " °F");
-                    $(".third-day").append("<br>");
-                    $(".third-day").append("Humidity: " + thirdDayHumidity);
+                    var secondDateIcon = `<center><img src="http://openweathermap.org/img/wn/${day2icon}@2x.png" width="50"></img>`
+                    var dayTwo = `<h4>${secondDay}</h4> ${secondDateIcon} <br> 
+                    Temperature: ${secondDayTemp} °F <br> 
+                    Humidity: ${secondDayHumidity}`;
+                    $(".second-day").html(dayTwo);
 
-                    var fourthDate = $("<h4>");
-                    $(".fourth-day").append(fourthDate);
-                    fourthDate.text(fourthDay);
-                    $(".fourth-day").append("Temperature: " + fourthDayTemp + " °F");
-                    $(".fourth-day").append("<br>");
-                    $(".fourth-day").append("Humidity: " + fourthDayHumidity);
+                    var thirdDateIcon = `<center><img src="http://openweathermap.org/img/wn/${day3icon}@2x.png" width="50"></img>`
+                    var dayThree = `<h4>${thirdDay}</h4> ${thirdDateIcon} <br> 
+                    Temperature: ${thirdDayTemp} °F <br> 
+                    Humidity: ${thirdDayHumidity}`;
+                    $(".third-day").html(dayThree);
 
-                    var fifthDate = $("<h4>");
-                    $(".fifth-day").append(fifthDate);
-                    fifthDate.text(fifthDay);
-                    $(".fifth-day").append("Temperature: " + fifthDayTemp + " °F");
-                    $(".fifth-day").append("<br>");
-                    $(".fifth-day").append("Humidity: " + fifthDayHumidity);
+                    var fourthDateIcon = `<center><img src="http://openweathermap.org/img/wn/${day4icon}@2x.png" width="50"></img>`
+                    var dayFour = `<h4>${fourthDay}</h4> ${fourthDateIcon} <br> 
+                    Temperature: ${fourthDayTemp} °F <br> 
+                    Humidity: ${fourthDayHumidity}`;
+                    $(".fourth-day").html(dayFour);
+
+                    var fifthDateIcon = `<center><img src="http://openweathermap.org/img/wn/${day5icon}@2x.png" width="50"></img>`
+                    var dayFive = `<h4>${fifthDay}</h4> ${fifthDateIcon} <br> 
+                    Temperature: ${fifthDayTemp} °F <br> 
+                    Humidity: ${fifthDayHumidity}`;
+                    $(".fifth-day").html(dayFive);
 
                 })
 
