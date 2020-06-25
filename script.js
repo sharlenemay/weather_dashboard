@@ -221,3 +221,4 @@ var cities =[];
         $(document).on("click",".city-name",displayWeatherInfo);
 
         renderCityButtons();
+        
